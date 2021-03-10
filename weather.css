@@ -1,0 +1,30 @@
+body {
+    background-color: #19153a;
+}
+
+.bg-purple {
+
+    background-color: #524e73;
+    color: white;
+}
+
+.currentIcon {
+    width: 60px;
+    height: 60px;
+}
+
+.imgMoreDays {
+    width: 70px;
+    height: 70px;
+}
+.font {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+@media only screen and (max-width: 768px) {
+
+    .card {
+        margin-bottom: 20px;
+    }
+}
