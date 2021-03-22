@@ -18,7 +18,7 @@ fetch(urlCurrent)
     .then(function (data) {
 
         currentDay(data);
-  
+
     })
     .catch(function (error) {
         console.log(error);
@@ -32,7 +32,7 @@ fetch(urlMoreDays)
         let nextDays = dataMoreDays.daily;
         nextDays.forEach((element, index) => {
             if (index != 0 && index <= 4) {
-                krenar(element, index);
+                nextFourDays(element, index);
             }
         })
     })
@@ -43,36 +43,26 @@ fetch(urlMoreDays)
 
 // Functions
 
-currentDay =(data) => {
+currentDay = (data) => {
     currentCard.innerHTML = `${data.name} , ${data.sys.country} `;
     const roundTemp = Math.floor(data.main.temp);
     currentTemp.innerHTML = roundTemp + '°';
     img.src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
     sky.innerHTML = data.weather[0].description;
-    currentDate.innerHTML = dateConvert(data.dt);
-    wind.innerHTML = `Wind ${data.wind.speed} m/s` ;
+    console.log(data.dt)
+    currentDate.innerHTML = dateConvert(data.dt, data.timezone);
+    wind.innerHTML = `Wind ${data.wind.speed} m/s`;
     presure.innerHTML = `Pressure  ${data.main.pressure} hPa`;
     humidity.innerHTML = `Humidity  ${data.main.humidity}% `;
     cloudiness.innerHTML = `Cloudiness ${data.clouds.all}%`
 }
 
-dateConvert = (timestamp) => {
-    const date = new Date(timestamp * 1000);
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const day = days[date.getDay()];
-    const hour = date.getHours();
-    let minute = date.getMinutes();
-    if( minute >= 0 && minute<= 9) {
-       minute=` 0${minute}`;
-    }
-    if(hour >=12 && hour <= 23 ) {
-
-        return day + ' ' + hour + ':' + minute +' PM';
-    }
-    else  {
-        return day + ' ' + hour + ':' + minute +' AM';
-    } 
-   
+dateConvert = (timestamp, timezone) => {
+    console.log(timestamp);
+    const date = new Date((timestamp + timezone ) * 1000);
+    const d = date.toUTCString();
+    console.log(d)
+    return d;
 }
 
 dateConvertNextDays = (time) => {
@@ -82,19 +72,21 @@ dateConvertNextDays = (time) => {
     return day;
 }
 
-krenar = (data, index) => {
+nextFourDays = (data, index) => {
     const card = document.querySelector(`.card-body${index}`);
     card.innerHTML = `<h5> ${dateConvertNextDays(data.dt)}</h5> <img class="imgMoreDays" src="http://openweathermap.org/img/w/${data.weather[0].icon}.png"> <p class="temp fs-4 mb-1">${Math.floor(data.temp.day)} ° </p> <p class="text-capitalize"> ${data.weather[0].description}</p>`;
 }
 
-search.addEventListener('click', function() {
+search.addEventListener('click', function () {
     const url = `http://api.openweathermap.org/data/2.5/weather?q=${searchBar.value}&appid=7db647c64993683c50619ceceac3dfad&units=metric`;
     fetch(url)
-    .then((resp) => resp.json())
-    .then(function (data) {
-        currentDay(data);
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
+        .then((resp) => resp.json())
+        .then(function (data) {
+            console.log(data.dt);
+            currentDay(data);
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 })
